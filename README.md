@@ -128,7 +128,91 @@ dfx canister call voting_app_backend getVoteResults '(0)'
 - [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
 - [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
 
-## 🚀 Next Steps
+## 🚀 Deployment Guide
+
+### 🔧 Local Development Deployment
+
+Untuk deployment lokal yang sudah berjalan:
+
+```bash
+# 1. Pastikan DFX berjalan
+dfx start --background
+
+# 2. Deploy ke lokal
+dfx deploy
+
+# 3. Akses aplikasi
+Frontend: http://ucwa4-rx777-77774-qaada-cai.localhost:4943/
+Backend: http://127.0.0.1:4943/?canisterId=ulvla-h7777-77774-qaacq-cai&id=umunu-kh777-77774-qaaca-cai
+```
+
+### 🌐 Production Deployment ke IC Mainnet
+
+Untuk mendeploy ke Internet Computer mainnet agar bisa digunakan banyak orang:
+
+#### 1. Persiapan Mainnet
+```bash
+# Install dfx jika belum ada
+sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+
+# Buat identity baru untuk mainnet
+dfx identity new mainnet-identity
+dfx identity use mainnet-identity
+
+# Tambahkan cycles (diperlukan untuk deploy ke mainnet)
+# Bisa dibeli di https://cycles.faucet.dfinity.org/
+```
+
+#### 2. Deploy ke IC Mainnet
+```bash
+# Deploy ke mainnet
+dfx deploy --network ic
+
+# Atau deploy satu per satu
+dfx deploy --network ic voting_app_backend
+dfx deploy --network ic voting_app_frontend
+```
+
+#### 3. Akses Aplikasi di Internet
+Setelah deploy berhasil, aplikasi akan tersedia di:
+- Frontend: `https://<canister-id>.ic0.app`
+- Backend: `https://<canister-id>.ic0.app`
+
+### 💰 Biaya Deployment
+
+**Mainnet Deployment:**
+- **Initial Cost**: ~0.5 T cycles untuk setup
+- **Monthly Cost**: ~0.1 T cycles per bulan
+- **Storage**: ~0.01 T cycles per MB
+- **Compute**: ~0.001 T cycles per request
+
+**Cara Mendapatkan Cycles:**
+1. **Cycles Faucet**: https://cycles.faucet.dfinity.org/ (gratis untuk developer)
+2. **DFINITY Foundation**: Program grants untuk developer
+3. **Beli ICP**: Convert ICP token ke cycles
+
+### 🔧 Konfigurasi Production
+
+#### 1. Environment Variables
+```bash
+# Set network ke production
+export DFX_NETWORK=ic
+
+# Set canister IDs yang sudah dideploy
+export CANISTER_ID_VOTING_APP_BACKEND=<backend-canister-id>
+export CANISTER_ID_VOTING_APP_FRONTEND=<frontend-canister-id>
+```
+
+#### 2. Optimasi Performance
+```bash
+# Build dengan optimasi
+dfx build --network ic --with-cycles
+
+# Compress assets
+dfx deploy --network ic --with-cycles --mode optimize
+```
+
+### 🚀 Next Steps
 
 1. **Enhanced Features**: Tambah fitur seperti deadline voting, kategori proposal, dan notifikasi
 2. **UI/UX Improvements**: Animasi, dark mode, dan aksesibilitas yang lebih baik

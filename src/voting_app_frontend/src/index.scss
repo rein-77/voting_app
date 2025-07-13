@@ -303,46 +303,84 @@ body {
   .vote-results {
     margin-top: 1rem;
     padding: 1rem;
-    background: #f7fafc;
+    background: #f8f9fa;
     border-radius: 8px;
-    
+    border: 1px solid #e9ecef;
+
     .total-votes {
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 0.5rem;
-    }
-    
-    .result-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #e2e8f0;
-      
-      &:last-child {
-        border-bottom: none;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #dee2e6;
+
+      h4 {
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
       }
-      
+
+      p {
+        color: #6c757d;
+        font-weight: 500;
+        margin: 0;
+      }
+    }
+
+    .result-item {
+      margin-bottom: 1rem;
+
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        .result-option {
+          font-weight: 600;
+          color: #495057;
+        }
+
+        .result-count {
+          color: #6c757d;
+          font-size: 0.9rem;
+        }
+      }
+
       .result-bar {
-        flex: 1;
-        height: 6px;
-        background: #e2e8f0;
-        border-radius: 3px;
-        margin: 0 1rem;
+        width: 100%;
+        height: 20px;
+        background: #e9ecef;
+        border-radius: 10px;
         overflow: hidden;
-        
+        position: relative;
+
         .result-fill {
           height: 100%;
           background: linear-gradient(90deg, #667eea, #764ba2);
-          transition: width 0.3s ease;
+          border-radius: 10px;
+          transition: width 0.5s ease;
+          min-width: 2px;
         }
       }
-      
-      .result-count {
-        font-weight: 600;
-        color: #4a5568;
-        min-width: 60px;
-        text-align: right;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 1rem;
+      color: #6c757d;
+      font-style: italic;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .loading-results {
+      text-align: center;
+      padding: 1rem;
+      color: #6c757d;
+
+      p {
+        margin: 0;
       }
     }
   }

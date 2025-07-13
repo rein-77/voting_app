@@ -150,16 +150,25 @@ function App() {
 
   const handleViewResults = async (proposalId) => {
     try {
+      console.log('Fetching vote results for proposal:', proposalId);
       const result = await voting_app_backend.getVoteResults(proposalId);
+      console.log('Vote results response:', result);
       
-      if (result.ok) {
+      if (result && result.ok) {
+        console.log('Vote results data:', result.ok);
         return result.ok;
-      } else {
+      } else if (result && result.err) {
         console.error('Error getting vote results:', result.err);
+        alert('Gagal memuat hasil voting: ' + JSON.stringify(result.err));
+        return null;
+      } else {
+        console.error('Unexpected response format:', result);
+        alert('Format respons tidak valid');
         return null;
       }
     } catch (error) {
       console.error('Error in handleViewResults:', error);
+      alert('Terjadi kesalahan saat memuat hasil: ' + error.message);
       return null;
     }
   };

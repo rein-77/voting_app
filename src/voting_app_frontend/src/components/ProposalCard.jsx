@@ -4,6 +4,7 @@ const ProposalCard = ({ proposal, onVote, onViewResults, hasVoted, isLoading }) 
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [voteResults, setVoteResults] = useState(null);
+  const [loadingResults, setLoadingResults] = useState(false);
 
   const handleVote = async () => {
     if (selectedOption !== null) {
@@ -14,10 +15,29 @@ const ProposalCard = ({ proposal, onVote, onViewResults, hasVoted, isLoading }) 
 
   const handleViewResults = async () => {
     if (!showResults) {
-      const results = await onViewResults(proposal.id);
-      setVoteResults(results);
+      try {
+        setLoadingResults(true);
+        console.log('Fetching results for proposal:', proposal.id);
+        const results = await onViewResults(proposal.id);
+        console.log('Results received:', results);
+        
+        if (results) {
+          setVoteResults(results);
+          setShowResults(true);
+        } else {
+          console.error('No results received');
+          alert('Gagal memuat hasil voting');
+        }
+      } catch (error) {
+        console.error('Error in handleViewResults:', error);
+        alert('Terjadi kesalahan saat memuat hasil');
+      } finally {
+        setLoadingResults(false);
+      }
+    } else {
+      setShowResults(false);
+      setVoteResults(null);
     }
-    setShowResults(!showResults);
   };
 
   const formatDate = (timestamp) => {
@@ -108,37 +128,54 @@ const ProposalCard = ({ proposal, onVote, onViewResults, hasVoted, isLoading }) 
         <button
           className="btn btn-secondary"
           onClick={handleViewResults}
-          disabled={isLoading}
+          disabled={isLoading || loadingResults}
         >
-          {showResults ? '🔼 Sembunyikan Hasil' : '📊 Lihat Hasil'}
+          {loadingResults ? '⏳ Memuat...' : showResults ? '🔼 Sembunyikan Hasil' : '📊 Lihat Hasil'}
         </button>
       </div>
 
-      {showResults && voteResults && (
+      {showResults && (
         <div className="vote-results">
-          <div className="total-votes">
-            Total Suara: {voteResults.totalVotes || 0}
-          </div>
-          {voteResults.results && voteResults.results.map(([option, count], index) => {
-            const percentage = voteResults.totalVotes > 0 
-              ? (count / voteResults.totalVotes) * 100 
-              : 0;
-            
-            return (
-              <div key={index} className="result-item">
-                <span className="result-option">{option}</span>
-                <div className="result-bar">
-                  <div 
-                    className="result-fill" 
-                    style={{ width: `${percentage}%` }}
-                  />
-                </div>
-                <span className="result-count">
-                  {count} ({percentage.toFixed(1)}%)
-                </span>
+          {voteResults ? (
+            <>
+              <div className="total-votes">
+                <h4>📊 Hasil Voting</h4>
+                <p>Total Suara: {Number(voteResults.totalVotes) || 0}</p>
               </div>
-            );
-          })}
+              {voteResults.results && voteResults.results.length > 0 ? (
+                voteResults.results.map(([option, count], index) => {
+                  const totalVotes = Number(voteResults.totalVotes) || 0;
+                  const voteCount = Number(count) || 0;
+                  const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
+                  
+                  return (
+                    <div key={index} className="result-item">
+                      <div className="result-header">
+                        <span className="result-option">{option}</span>
+                        <span className="result-count">
+                          {voteCount} ({percentage.toFixed(1)}%)
+                        </span>
+                      </div>
+                      <div className="result-bar">
+                        <div 
+                          className="result-fill" 
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="no-results">
+                  <p>Belum ada suara untuk proposal ini</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="loading-results">
+              <p>Memuat hasil voting...</p>
+            </div>
+          )}
         </div>
       )}
     </div>
