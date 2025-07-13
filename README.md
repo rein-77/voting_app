@@ -32,7 +32,6 @@ voting_app/
 │           ├── App.jsx       # Frontend React
 │           └── main.jsx
 ├── dfx.json                  # Konfigurasi DFX
-├── BACKEND_API.md            # Dokumentasi API Backend
 └── README.md                 # File ini
 ```
 
